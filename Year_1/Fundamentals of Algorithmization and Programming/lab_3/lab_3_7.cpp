@@ -1,10 +1,6 @@
 #include <iostream>
 using namespace std;
 
-void func(int s ) {
-
-}
-
 int main() {
 	setlocale(LC_ALL, "RU");
 
