@@ -14,7 +14,7 @@ file_with_result = open(Path_to_new_file_result, 'w', encoding='utf-8')
 file_with_result.write("Time     WC temp     WC Effect" + "\n")
 file_with_result.write("-" * 31 + "\n")
 
-for line in line_data[2:]:
+for line in line_data[2:-1]:
     data = line.split()
     time = data[0]
     air_temp = int(data[1])
