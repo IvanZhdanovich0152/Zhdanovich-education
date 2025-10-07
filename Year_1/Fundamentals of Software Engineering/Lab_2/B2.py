@@ -1,18 +1,18 @@
-Path_to_File_with_data = 'file_B/3.WCData.txt'
-x = Path_to_File_with_data[7]
-Path_to_new_file_result = f'file_B/{x}.WindChillReport.txt'
+path_to_file_in = 'file_B/3.WCData.txt'
+x = path_to_file_in[7]
+path_to_file_out = f'file_B/{x}.WindChillReport.txt'
 
-with open(Path_to_File_with_data, 'r', encoding='utf-8') as file:
+with open(path_to_file_in, 'r', encoding='utf-8') as file:
     content = file.read()
     line_data = content.split('\n')
 
 total_temp = 0
 count_obs = 0
 
-file_with_result = open(Path_to_new_file_result, 'w', encoding='utf-8')
+file_out = open(path_to_file_out, 'w', encoding='utf-8')
 
-file_with_result.write("Time     WC temp     WC Effect" + "\n")
-file_with_result.write("-" * 31 + "\n")
+file_out.write("Time     WC temp     WC Effect" + "\n")
+file_out.write("-" * 31 + "\n")
 
 for line in line_data[2:-1]:
     data = line.split()
@@ -25,11 +25,11 @@ for line in line_data[2:-1]:
 
     total_temp += wc_temp
     count_obs += 1
-    file_with_result.write("{} {: 7.1f} {: 13.1f}".format(time, wc_temp, wc_effect) + "\n")
+    file_out.write("{} {: 7.1f} {: 13.1f}".format(time, wc_temp, wc_effect) + "\n")
 
 avg_temp = total_temp / count_obs
 
-file_with_result.write("-" * 31 + "\n")
-file_with_result.write("The average adjusted temperature, based on {} observations, was {:.1f}".format(count_obs,avg_temp))
+file_out.write("-" * 31 + "\n")
+file_out.write("The average adjusted temperature, based on {} observations, was {:.1f}".format(count_obs, avg_temp))
 
-file_with_result.close()
+file_out.close()
