@@ -11,7 +11,7 @@ int main() {
 
     while (x0 <= x1) {
         double f_x = -2.4*x0*x0+1/(x0+0.5)-sin(x0*x0);
-        cout << x0 << " | " << f_x << endl;
+        cout <<"| " << x0 << " | " << f_x <<" |" <<endl;
         x0 += dx;
     }
     return 0;
