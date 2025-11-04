@@ -28,7 +28,7 @@ def get_card_type(string):
 
 
 
-file_in = "card.data"
+file_in = "file_B/card.data"
 with open(file_in) as f:
     content = f.read()
     card_numbers = content.split("\n")

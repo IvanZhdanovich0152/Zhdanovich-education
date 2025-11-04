@@ -435,3 +435,20 @@ Minimum     Maximum     Average
 Путь до выходного файла указать в переменной `path_to_file_out = 'file_B/02Report.txt'`
 
 </details>
+
+
+
+
+
+
+
+
+
+
+
+
+[//]: # (<details>)
+
+[//]: # (    <summary style="font-weight: bold; font-size: large">Нажмите, чтобы развернуть условия и решения</summary>)
+
+[//]: # (</details>)
