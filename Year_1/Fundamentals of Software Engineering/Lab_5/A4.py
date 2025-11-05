@@ -3,7 +3,8 @@
 1 out_file
 
 defunction:
-seach(list, str) -> turle or str
+search_fragment(list, str) -> list[bool, tuple]
+seach(list, str) -> list[bool, str]
 diff(list, str, str) -> int
 mode(list, str) -> str
 encode(str) -> str
@@ -31,7 +32,7 @@ def decode(string):
             continue
     return string
 
-def seach_fragment(data:list, *protein_part:str):
+def search_fragment(data:list, protein_part:str) -> list[bool, tuple]:
     protein_part = decode(protein_part)
     for item in data:
         name, organism, protein = item
@@ -40,7 +41,7 @@ def seach_fragment(data:list, *protein_part:str):
                 return True, (organism, name)
     return False, "NOT FOUND"
 
-def seach(data:list, protein_name:str):
+def search(data:list, protein_name:str):
     for items in data:
         name, organism, protein = items
         for name in items:
@@ -49,18 +50,20 @@ def seach(data:list, protein_name:str):
     return False, protein_name
 
 def diff(data:list, protein_1:str, protein_2:str):
-    flag1, protein_1 = seach(sequences, protein_1)
-    flag2, protein_2 = seach(sequences, protein_2)
+    flag1, protein_1 = search(sequences, protein_1)
+    flag2, protein_2 = search(sequences, protein_2)
+    protein_1 = decode(protein_1)
+    protein_2 = decode(protein_2)
     count = 0
     odds = 0
 
     if flag1 or flag2:
         if len(protein_1) > len(protein_2):
             odds = len(protein_1) - len(protein_2)
-            protein_2 = protein_2+ "#"*odds
+            protein_2 = protein_2 + "#" * odds
         elif len(protein_2) > len(protein_1):
             odds = len(protein_2) - len(protein_1)
-            protein_1 = protein_1 + "#"*odds
+            protein_1 = protein_1 + "#" * odds
         for i in range(len(protein_1)):
             if protein_1[i] != protein_2[i]:
                 count += 1
@@ -73,38 +76,57 @@ def diff(data:list, protein_1:str, protein_2:str):
         return protein_2
     return None
 
-def mode(data:list, protein:str):
-    flag, protein = seach(sequences, protein)
+def mode(data:list, protein:str) :
+    flag, protein = search(sequences, protein)
     if flag:
-        most_common_char = sorted(Counter(protein).most_common(4), key=lambda x: x[0])
-        return most_common_char[0]
+        counter = Counter(protein)
+        max_freq = max(counter.values())
+        return min(aa for aa, freq in counter.items() if freq == max_freq), max_freq
     else:
-        return protein
+        return [protein, -1]
 
 
-sequences = read_data("other_file/sequences.0.txt")
-print(sequences)
-commands = read_data("other_file/commands.0.txt")
-print(commands)
+sequences = read_data("other_file/sequences.1.txt")
+commands = read_data("other_file/commands.1.txt")
 
-print(diff(sequences, "Cecropin", "Pre-T/NK cell associated protein 6H9A"))
+path_to_file_out = "other_file/output.txt"
+with open(path_to_file_out, 'w', encoding='utf-8') as file_out:
+    file_out.write("Ivan Zhdanovich\n")
+    file_out.write("Genetic Searching\n")
+
+    for i, command in enumerate(commands):
+        file_out.write("-" * 75 +"\n")
+        i+=1
+        match command[0]:
+            case "search":
+                flag_search, tuple_protein = search_fragment(sequences, command[1])
+                if flag_search:
+                    organism, protein = tuple_protein
+                    file_out.write("{:03}   {:<9}{}\n".format(i,command[0], command[1]))
+                    file_out.write("{}\t\t\t\t{}\n".format("organism", "protein"))
+                    file_out.write("{}\t\t{}\n".format(organism, protein))
+                else:
+                    file_out.write("{:03}   {:<9}{}\n".format(i, command[0], command[1]))
+                    file_out.write("{}\t\t\t\t{}\n".format("organism", "protein"))
+                    file_out.write("{}\n".format(tuple_protein))
+            case "diff":
+                file_out.write("{:03}   {}   {}\t{}\n".format(i, command[0], command[1], command[2]))
+                count_diff = diff(sequences, command[1], command[2])
+                if type(count_diff) == int:
+                    file_out.write("{}\n".format("amino-acids difference: "))
+                    file_out.write("{}\n".format(count_diff))
+                else:
+                    file_out.write(f"MISSING: {count_diff}\n")
+            case "mode":
+                file_out.write("{:03}   {:<9}{}\n".format(i, command[0], command[1]))
+                aa, count = mode(sequences, command[1])
+                if count == -1:
+                    file_out.write(f"MISSING: {aa}\n")
+                else:
+                    file_out.write("{}\n".format("amino-acid occurs:"))
+                    file_out.write("{} \t\t {}\n".format(aa, count))
+            case _:
+                continue
+    file_out.write("-" * 75 +"\n")
 
 
-print(mode(sequences, "Cecropin"))
-
-
-#flag, a = seach_fragment(data=sequences, protein_part="II")
-# if flag:
-#     organism, name = a
-#     print(organism, name)
-# else:
-#     print(a)
-#
-#
-# flag, protein = seach(sequences, "6.8 kDa mitochond proteolipid")
-#
-# if flag:
-#     print(protein)
-# else:
-#     print(f"Missing: {protein}")
-#
