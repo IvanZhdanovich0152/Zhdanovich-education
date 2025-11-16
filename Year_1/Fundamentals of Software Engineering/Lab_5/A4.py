@@ -140,4 +140,3 @@ with open(path_to_file_out, 'w', encoding='utf-8') as file_out:
             case _:
                 continue
     file_out.write("-" * 75 +"\n")
-
