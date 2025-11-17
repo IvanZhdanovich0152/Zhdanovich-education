@@ -96,9 +96,14 @@ def mode(data: list, protein: str) -> list[str, int]:
         return [protein, -1]
 
 
+path_file_with_commands = "other_file/commands.1.txt"
+path_file_with_data = "other_file/sequences.1.txt"
+path_to_file_out = "other_file/output.txt"
+
+
 sequences = read_data("other_file/sequences.1.txt")
 commands = read_data("other_file/commands.2.txt")
-path_to_file_out = "other_file/output.txt"
+
 
 
 with open(path_to_file_out, 'w', encoding='utf-8') as file_out:
