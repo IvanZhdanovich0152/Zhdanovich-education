@@ -24,7 +24,7 @@ def load_workouts_data() -> list[dict]:
         workouts_tree = ET.parse('workouts.xml')
         workouts = []
         for workouts_elem in workouts_tree.getroot().findall('workout'):
-            user = {
+            workout = {
                 'workout_id': int(workouts_elem.find('workout_id').text),
                 'user_id': int(workouts_elem.find('user_id').text),
                 'date': workouts_elem.find('date').text,
@@ -35,7 +35,7 @@ def load_workouts_data() -> list[dict]:
                 'avg_heart_rate': workouts_elem.find('avg_heart_rate').text,
                 'intensity': workouts_elem.find('intensity').text,
             }
-            workouts.append(user)
+            workouts.append(workout)
         return workouts
     except FileNotFoundError:
         print("Файл не найден")
@@ -59,7 +59,91 @@ def get_stats(users_list: list[dict], workouts_stats: list[dict]):
 Пройдено дистанции: {distance_covered:.1f} км
     ''')
 
+def update_workouts(users_list: list[dict], workouts_stats: list[dict]):
+    for user in users_list:
+        for workout in workouts_stats:
+            if workout['user_id'] == user['user_id']:
+                user['workouts'].append(workout)
+
+
+def analyze_user_activity(users_list: list[dict], workouts_stats: list[dict]):
+    update_workouts(users_list, workouts_stats)
+    people_data = []
+
+    for user in users_list:
+        count_workouts = len(user['workouts'])
+        calories_burned = 0
+        total_time = 0
+        for workout in user['workouts']:
+            calories_burned += workout['calories']
+            total_time += workout['duration']
+        people_data.append({
+            'name': user['name'],
+            'total_time': total_time,
+            'workouts': count_workouts,
+            'calories': calories_burned,
+            'level': user['fitness_level']
+        })
+
+    times = [p['total_time'] for p in people_data]
+    counts = [p['workouts'] for p in people_data]
+    calories = [p['calories'] for p in people_data]
+
+    max_time, min_time = max(times), min(times)
+    max_count, min_count = max(counts), min(counts)
+    max_cal, min_cal = max(calories), min(calories)
+
+    for p in people_data:
+        norm_time = (p['total_time'] - min_time) / (max_time - min_time) * 100 if max_time != min_time else 50
+        norm_count = (p['workouts'] - min_count) / (max_count - min_count) * 100 if max_count != min_count else 50
+        norm_cal = (p['calories'] - min_cal) / (max_cal - min_cal) * 100 if max_cal != min_cal else 50
+
+        p['score'] = norm_time * 0.4 + norm_cal * 0.4 + norm_count * 0.2
+
+    ranked_people = sorted(people_data, key=lambda x: x['score'], reverse=True)
+
+    print("ТОП-3 АКТИВНЫХ ПОЛЬЗОВАТЕЛЕЙ:")
+    for person in ranked_people[:3]:
+        print(
+f'''{person["name"]} ({person['level']}) 
+ Рейтинг: {person['score']:.1f}
+ Тренировок: {person['workouts']}
+ Калорий: {person['calories']}
+ Время: {(person['total_time']/60):.1f} часов
+''')
+
+
+
+def analyze_workout_types(workouts_stats: list[dict]):
+    types = {}
+    for workout in workouts_stats:
+        if workout['type'] not in types:
+            types[workout['type']] = [1, workout['duration'], workout['calories']]
+        else:
+            types[workout['type']][0] += 1
+            types[workout['type']][1] += workout['duration']
+            types[workout['type']][2] += workout['calories']
+    print("РАСПРЕДЕЛЕНИЕ ПО ТИПАМ ТРЕНИРОВОК:")
+    for type in types:
+        types[type][1] /= types[type][0]
+        types[type][2] /= types[type][0]
+        print(
+f'''{type}: {types[type][0]} тренировок ({(types[type][0]/workouts_stats[-1]['workout_id'])*100:.1f}%)
+ Средняя длительность: {int(types[type][1])} мин
+ Средние калории: {int(types[type][2])} ккал
+''')
+
+
+
+
 users = load_users_data()
 workouts = load_workouts_data()
 
 get_stats(users, workouts)
+analyze_workout_types(workouts)
+analyze_user_activity(users, workouts)
+
+
+
+
+# user = next((u for u in users if u['name'].lower() == user_name.lower()), None)
