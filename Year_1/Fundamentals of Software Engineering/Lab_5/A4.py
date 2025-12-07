@@ -14,7 +14,6 @@ def read_data(file) -> list:
         logger.error(f'File {file} not found.')
         exit(-1)
 
-
 def decode(protein_line: str) -> str:
     for char in protein_line:
         if char.isdigit() and (char != '1' or char != '2'):

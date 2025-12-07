@@ -3,7 +3,7 @@ import re
 # He jests at scars. That never felt a wound!     Hello, friend! Are you OK?
 
 text = input("Enter a text: ")
-sentences = re.split(r'(?<=[.?!]) ', text)
+sentences = re.split(r'(?<=[.?!])', text)
 count = 0
 
 for sentence in sentences:
