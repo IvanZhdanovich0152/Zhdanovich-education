@@ -53,10 +53,20 @@ double simpson(double a, double b, int n) {
     return h * sum / 3.0;
 }
 
+double F(double x) {
+    return 0.65 * x * x + 1.4 * sin(x) - 0.6 * x;
+}
+
+
+
+
 // Точное значение интеграла
 double exactIntegral(double a, double b) {
-    auto F = [](double x) { return 0.65 * x * x + 1.4 * sin(x) - 0.6 * x; }; //Первообразная
-    return F(b) - F(a); // Формула Ньютона-Лейбница
+    // auto F = [](double x) { return 0.65 * x * x + 1.4 * sin(x) - 0.6 * x; }; //Первообразная
+    // return F(b) - F(a);    // Формула Ньютона-Лейбница
+    return F(b) - F(a);
+
+
 }
 
 int main() {
