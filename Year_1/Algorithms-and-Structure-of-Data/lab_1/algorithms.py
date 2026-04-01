@@ -1,20 +1,17 @@
-import generate_test_data as gtd
-
 def solution(subs, bribes, visa_sets):
     cost = {}
     chosen_set = {}
 
-    def calculate_cost(officer):
-        if officer in cost:
-            return cost[officer]
+    def calculate_cost(chinovnik):
+        if chinovnik in cost:
+            return cost[chinovnik]
 
-
-        idx = officer - 1
+        idx = chinovnik - 1
 
         if not subs[idx]:
-            cost[officer] = bribes[idx][0]
-            chosen_set[officer] = 0
-            return cost[officer]
+            cost[chinovnik] = bribes[idx][0]
+            chosen_set[chinovnik] = 0
+            return cost[chinovnik]
 
         subs_cost = {}
 
@@ -37,21 +34,23 @@ def solution(subs, bribes, visa_sets):
                 min_total = total
                 best_set = j
 
-        cost[officer] = min_total
-        chosen_set[officer] = best_set
+        cost[chinovnik] = min_total
+        chosen_set[chinovnik] = best_set
         return min_total
 
-    def get_order(officer, result):
-        idx = officer - 1
-        if chosen_set[officer] == -1:
+    def get_order(chinovnik, result):
+        idx = chinovnik - 1
+        if chosen_set[chinovnik] == -1:
             return
 
-        visa_set = visa_sets[idx][chosen_set[officer]]
+        visa_set = visa_sets[idx][chosen_set[chinovnik]]
         for sub in visa_set:
             get_order(sub, result)
 
 
-        result.append(officer)
+        result.append(chinovnik)
+
+
 
 
     min_cost = calculate_cost(1)
@@ -62,10 +61,41 @@ def solution(subs, bribes, visa_sets):
     return min_cost, order
 
 
+subordinates = [
+    [2,3],
+    [4],
+    [5],
+    [],
+    [6, 7, 8, 9],
+    [10],
+    [],
+    [],
+    [],
+    [],
+]
+visa_sets = [
+    [[2],[3],[2,3]],
+    [[4]],
+    [[5]],
+    [[]],
+    [[6], [7], [8], [6, 7]],
+    [[10], [8], [1]],
+    [[]], [[]], [[]], [[]],
+]
+bribes = [
+    [10, 15, 25],
+    [16],
+    [9],
+    [33],
+    [4, 10, 15, 25],
+    [10, 15, 25],
+    [8],
+    [9],
+    [6],
+    [4]
+]
 
 
-subordinates, visa_sets, bribes = gtd.generate_officials_data(99)
-gtd.print_generated_data(subordinates, visa_sets, bribes)
 
 min_cost, order = solution(subordinates, bribes, visa_sets)
 
