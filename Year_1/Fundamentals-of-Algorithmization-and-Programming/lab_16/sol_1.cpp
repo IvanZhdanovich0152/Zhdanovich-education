@@ -4,18 +4,13 @@ using namespace std;
 
 int main() {
     int A;
-    unsigned int i;
-
-    cout << "Enter number A: ";
+    int i;
     cin >> A;
-
     cout << format("{:b}", A) << endl;
-
-    cout << "Enter number i: ";
     cin >> i;
-    A &= (~0 << i+1);
+
+    A &= ~(1 << i);
 
     cout << format("{:b} - {}", A, A) << endl;
-    return 0;
 }
 
