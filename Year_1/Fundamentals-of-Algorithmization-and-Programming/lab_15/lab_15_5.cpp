@@ -84,7 +84,6 @@ int main() {
 
 
     rand_arr(matrix, m, n, a, b);
-
     show_arr(matrix, m, n, a, b);
     show_new_arr(matrix, m, n, a, b);
 
