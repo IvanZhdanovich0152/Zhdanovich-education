@@ -82,10 +82,10 @@ def print_matrix_with_path(matrix, path):
 def main():
 
     matrix1 = [
-        [5, 2, 8, 3],
-        [4, 7, 1, 9],
-        [6, 3, 2, 5],
-        [8, 1, 4, 7]
+        [5, 7, 8],
+        [4, 7, 1],
+        [6, 3, 2],
+        [8, 9, 4]
     ]
 
     min_penalty1, path1 = find_min_penalty_path(matrix1)
