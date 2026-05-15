@@ -2,7 +2,7 @@
 using namespace std;
 
 struct Price {
-    int ruble;
+    unsigned int ruble;
     unsigned short coin;
 };
 
@@ -42,8 +42,8 @@ struct Exam_report {
 };
 
 struct Complex {
-    double re;
-    double im;
+    int re;
+    int im;
 
     void input() {
         cout << "Re & Im >> ";
@@ -51,7 +51,10 @@ struct Complex {
     }
 
     void output() {
-        cout << re << " + " << im << "i" << endl;
+        if (im < 0) {
+            cout << re << " "<< im << "i" << endl;
+        } else
+            cout << re << " + " << im << "i" << endl;
     }
 
     Complex add(Complex x) {

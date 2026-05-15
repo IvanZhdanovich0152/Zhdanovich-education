@@ -1,12 +1,13 @@
 #include <iostream>
 #include <string>
+#include <cstring>
 using namespace std;
 
 struct Student {
     char first_name[50];
     char last_name[50];
     char middle_name[50];
-    string gender;
+    char gender[10];
     unsigned short age;
     unsigned short year;
     float performance;
@@ -45,7 +46,15 @@ void print_arr(Student *students, int m) {
 int counter_male(Student *students, int m, int n) {
     int counter = 0;
     for (int i = 0; i < m; i++)
-        if (students[i].gender == "male" && students[i].year == n) {
+        if ((strcmp(students[i].gender, "male") == 0) && students[i].year == n) {
+            counter++;
+        }
+    return counter;
+}
+int counter_female_with_grade(Student *students, int m, int n) {
+    int counter = 0;
+    for (int i = 0; i < m; i++)
+        if ((strcmp(students[i].gender, "female") == 0) && students[i].year == n && students[i].performance > 8) {
             counter++;
         }
     return counter;
