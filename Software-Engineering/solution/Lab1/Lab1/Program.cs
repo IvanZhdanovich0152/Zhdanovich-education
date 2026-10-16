@@ -3,6 +3,7 @@ using System.Drawing.Imaging;
 using System.Text;
 using System.Text.RegularExpressions;
 
+
 namespace Lab1
 {
     public class Program
@@ -36,37 +37,41 @@ namespace Lab1
         public static void Main()
         {
             string inputPath = "Podarok.txt"; 
-            string outputPath = "Output.png";
-            
+            string outputPath = "Out.png";
+            string text = "";
+
             try
             {
+                text = TextReader(inputPath);
+                if (text == "")
+                {
+                    return;
+                }
+            } catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка выполнения: {e.Message}");
+                return;
+            }
+            
+            var colors = ExtractColors(text);
+            VisualizeColorsGrid(colors, outputPath);
+        }
+
+        static string TextReader(string inputPath)
+        {
                 if (!File.Exists(inputPath))
                 {
                     Console.WriteLine($"Файл не найден: {inputPath}");
-                    return;
+                    return "";
                 }
-
-                string text = File.ReadAllText(inputPath, Encoding.UTF8);
-                var colors = ExtractColors(text);
-
-                if (colors.Count == 0)
-                {
-                    Console.WriteLine("В тексте не найдено слов, обозначающих цвета.");
-                    return;
-                }
-
-                VisualizeColorsGrid(colors, outputPath);
-                // PrintStatistics(colors);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Ошибка выполнения: {ex.Message}");
-            }
+                string foundingText = File.ReadAllText(inputPath, Encoding.UTF8);
+                return foundingText;
         }
-
+    
         static List<Color> ExtractColors(string text)
         {
             var detectedColors = new List<Color>();
+            
             var words = Regex.Matches(text.ToLower(), @"\b[\p{IsCyrillic}a-z]+\b");
 
             foreach (Match match in words)
@@ -86,14 +91,15 @@ namespace Lab1
         {
             const int squareSize = 30; 
             
-            int cols = (int)Math.Ceiling(Math.Sqrt(colors.Count));
-            int rows = (int)Math.Ceiling((double)colors.Count / cols);
+            var cols = (int)Math.Ceiling(Math.Sqrt(colors.Count)); 
+            var rows = (int)Math.Ceiling((double)colors.Count / cols);
 
             int imgWidth = cols * squareSize;
             int imgHeight = rows * squareSize;
 
             using (Bitmap bmp = new Bitmap(imgWidth, imgHeight))
             using (Graphics g = Graphics.FromImage(bmp))
+
             {
                 g.Clear(Color.White);
 
@@ -112,18 +118,5 @@ namespace Lab1
                 Console.WriteLine($"Визуализация сохранена в {outputPath}");
             }
         }
-
-        // static void PrintStatistics(List<Color> colors)
-        // {
-        //     Console.WriteLine("\nЧастота упоминания цветов:");
-        //     var stats = colors.GroupBy(c => c.Name)
-        //                       .Select(g => new { Color = g.Key, Count = g.Count() })
-        //                       .OrderByDescending(x => x.Count);
-        //
-        //     foreach (var stat in stats)
-        //     {
-        //         Console.WriteLine($"- {stat.Color}: {stat.Count}");
-        //     }
-        // }
     }
 }
