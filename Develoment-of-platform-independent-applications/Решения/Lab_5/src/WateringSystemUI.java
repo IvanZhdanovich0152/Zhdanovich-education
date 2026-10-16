@@ -45,7 +45,7 @@ public class WateringSystemUI {
         int waterTank = readInt("Введите кол-во воды в баке на данный момент: ", 0, MaxWaterTank);
         WateringSystem.WaterState waterState = getWaterState();
 
-        OperationResult<WateringSystem> result = WateringSystem.create(-waterTank, MaxWaterTank, moistureLevel, waterState);
+        OperationResult<WateringSystem> result = WateringSystem.create(waterTank, MaxWaterTank, moistureLevel, waterState);
 
         if (result.isSuccess()) {
             this.system = result.value();
