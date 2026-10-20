@@ -3,26 +3,53 @@ public class RAM {
 
     private int speed;
     private double totalGB;
-    private double usageGB;
+    private double usageGB = 0;
     private TypeRAM type;
 
     public RAM() {
-        this(6000, 32.0, 3.2, TypeRAM.DDR5);
+        this(3600,  32.0, TypeRAM.DDR4);
     }
 
-    public RAM(int speed, double totalGB, double usageGB, TypeRAM type) {
+    public RAM(int speed, double totalGB, TypeRAM type) {
         this.speed = speed;
         this.totalGB = totalGB;
-        this.usageGB = usageGB;
         this.type = type;
     }
 
-    public void allocate(double usageGB) {
-        this.usageGB += usageGB;
+    public String allocate(double allocateGB) {
+        if (allocateGB < 0) {
+            return "Чтобы зарезервировать место в ОП надо ввести положительное double число GB, которое хотите занять.";
+        }
+        if (usageGB + allocateGB > totalGB) {
+            this.usageGB = totalGB;
+        }
+        return "Память успешно зарезервирована! Текущая занятая память составляет : " + usageGB + "Gb";
     }
 
-    public void free(double freeGB) {
-        this.usageGB -= freeGB;
+    public String free(double freeGB) {
+        if (freeGB < 0) {
+            freeGB *= -1;
+        }
+        if (usageGB - freeGB < 0) {
+            this.usageGB = 0;
+        }
+        return "Память успешно освобождена! Текущая занятая память составляет : " + usageGB + "Gb";
+    }
+
+    public String checkStatus() {
+        double percent = (usageGB / totalGB) * 100.0;
+        if (percent >= 85.0) {
+            return "Состояние ОП | " +
+                    Computer.TypeComponentStatus.CRITICAL +
+                    " | Заполнение ОП на " + percent + "%\n";
+        }else if (percent >= 70.0) {
+            return "Состояние ОП | " +
+                    Computer.TypeComponentStatus.WARNING +
+                    " | Заполнение ОП на " + percent + "%\n";
+        }
+        return "Состояние ОП | " +
+                Computer.TypeComponentStatus.NORMAL +
+                " | Заполнение ОП на " + percent + "%\n";
     }
 
     @Override
