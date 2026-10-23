@@ -1,16 +1,23 @@
 public class Processor {
-
     private final String model;
     private final double speed;
     private final int cores;
     private final int temperature;
     private int usage;
 
-    public Processor() {
-        this("AMD Ryzen 5 5500", 4.2, 6, 50);
-    }
-
     public Processor(String model, double speed, int cores, int temperature) {
+        if (model == null) {
+            throw new IllegalArgumentException("Модель процессора не может быть пустой.");
+        }
+        if (speed <= 0) {
+            throw new IllegalArgumentException("Частота процессора должна быть положительной.");
+        }
+        if (cores <= 0) {
+            throw new IllegalArgumentException("Количество ядер должно быть положительным.");
+        }
+        if (temperature < 0) {
+            throw new IllegalArgumentException("Температура не может быть отрицательной.");
+        }
         this.model = model;
         this.speed = speed;
         this.cores = cores;
@@ -37,10 +44,11 @@ public class Processor {
             status += "Температура процессора | " +
                     Computer.TypeComponentStatus.WARNING +
                     " | Температура процессора выше нормы : " + temperature + "C\n";
+        } else {
+            status += "Температура процессора | " +
+                    Computer.TypeComponentStatus.NORMAL +
+                    " | Температура процессора в норме : " + temperature + "C\n";
         }
-        status += "Температура процессора | " +
-                Computer.TypeComponentStatus.NORMAL +
-                " | Температура процессора в норме : " + temperature + "C\n";
         if (usage > 90) {
             status += "Загруженность процессора | " +
                     Computer.TypeComponentStatus.CRITICAL +

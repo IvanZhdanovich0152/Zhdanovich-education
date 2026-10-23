@@ -6,29 +6,32 @@ public class Computer {
     private boolean powerOn = false;
 
     public Computer(Processor processor, RAM ram, HardDisk disk) {
+        if (processor == null) {
+            throw new IllegalArgumentException("Процессор не может быть null.");
+        }
+        if (ram == null) {
+            throw new IllegalArgumentException("ОП не может быть null.");
+        }
+        if (disk == null) {
+            throw new IllegalArgumentException("Диск не может быть null.");
+        }
         this.processor = processor;
         this.ram = ram;
         this.disk = disk;
     }
 
-    public Computer() {
-        this(
-                new Processor(),
-                new RAM(),
-                new HardDisk()
-        );
-    }
-
-    public void turnOn() {
+    public String turnOn() {
         ram.allocate(2.3);
         processor.setUsage(13);
         powerOn = true;
+        return "Компьютер включен.";
     }
 
-    public void turnoff() {
+    public String turnoff() {
         ram.free(128.0);
         processor.setUsage(0);
         powerOn = false;
+        return "Компьютер выключен.";
     }
 
     public boolean isPowerOn() {
@@ -37,54 +40,58 @@ public class Computer {
 
     public String allocateRAM(double amount) {
         if (powerOn) {
-            ram.allocate(amount);
-            return "В ОП зарезервированно " + amount + "Гб";
+            return ram.allocate(amount);
         }
         return "Для начала надо включить компьютер";
     }
 
     public String freeRAM(double amount) {
         if (powerOn) {
-            ram.free(amount);
-            return "В ОП освобождено" + amount + "Гб";
+            return ram.free(amount);
         }
         return "Для начала надо включить компьютер";
     }
 
     public String writeDisk(double amount) {
         if (powerOn) {
-            disk.write(amount);
-            return "На диск записано " + amount + "Гб";
+            return disk.write(amount);
         }
         return "Для начала надо включить компьютер";
     }
 
     public String deleteDisk(double amount) {
         if (powerOn) {
-            disk.delete(amount);
-            return "С диска удалено" + amount + "Гб";
+            return disk.delete(amount);
         }
         return "Для начала надо включить компьютер";
     }
 
     public String setProcessorUsage(int usage) {
         if (powerOn) {
-            processor.setUsage(usage);
-            return "Нагрузка установлена на " + usage;
+            return processor.setUsage(usage);
         }
         return "Для начала надо включить компьютер";
     }
 
 
     public void setProcessor(Processor processor) {
+        if (processor == null) {
+            throw new IllegalArgumentException("Процессор не может быть null.");
+        }
         this.processor = processor;
     }
 
     public void setRam(RAM ram) {
+        if (ram == null) {
+            throw new IllegalArgumentException("ОП не может быть null.");
+        }
         this.ram = ram;
     }
 
     public void setDisk(HardDisk disk) {
+        if (disk == null) {
+            throw new IllegalArgumentException("Диск не может быть null.");
+        }
         this.disk = disk;
     }
 

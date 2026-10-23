@@ -1,16 +1,22 @@
 public class HardDisk {
     public enum TypeHardDisk {HDD, SSD, NVME}
-
-    private double totalGB;
+    private final double totalGB;
     private double usageGB;
-    private TypeHardDisk type;
-
-
-    public HardDisk() {
-        this(2048, 1235.43, TypeHardDisk.HDD);
-    }
+    private final TypeHardDisk type;
 
     public HardDisk(double totalGB, double usageGB, TypeHardDisk type) {
+        if (totalGB <= 0) {
+            throw new IllegalArgumentException("Объем диска должен быть положительным.");
+        }
+        if (usageGB < 0) {
+            throw new IllegalArgumentException("Занятый объем диска не может быть отрицательным.");
+        }
+        if (usageGB > totalGB) {
+            throw new IllegalArgumentException("Занятый объем не может быть больше общего объема диска.");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Тип диска не может быть null.");
+        }
         this.totalGB = totalGB;
         this.usageGB = usageGB;
         this.type = type;
@@ -22,6 +28,8 @@ public class HardDisk {
         }
         if (usageGB + writeGB > totalGB) {
             this.usageGB = totalGB;
+        } else {
+            this.usageGB += writeGB;
         }
         return "Данные успешно записаны! Текущая заполненность диска : " + usageGB + "Gb";
     }
@@ -32,6 +40,8 @@ public class HardDisk {
         }
         if (usageGB - freeGB < 0) {
             this.usageGB = 0;
+        } else {
+            this.usageGB -= freeGB;
         }
         return "Данные успешно удалены! Текущая заполненность диска : " + usageGB + "Gb";
     }

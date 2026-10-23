@@ -1,16 +1,21 @@
 public class RAM {
     public enum TypeRAM {DDR3, DDR4, DDR5}
 
-    private int speed;
-    private double totalGB;
+    private final int speed;
+    private final double totalGB;
     private double usageGB = 0;
-    private TypeRAM type;
-
-    public RAM() {
-        this(3600,  32.0, TypeRAM.DDR4);
-    }
+    private final TypeRAM type;
 
     public RAM(int speed, double totalGB, TypeRAM type) {
+        if (speed <= 0) {
+            throw new IllegalArgumentException("Частота ОП должна быть положительной.");
+        }
+        if (totalGB <= 0) {
+            throw new IllegalArgumentException("Объем ОП должен быть положительным.");
+        }
+        if (type == null) {
+            throw new IllegalArgumentException("Тип ОП не может быть null.");
+        }
         this.speed = speed;
         this.totalGB = totalGB;
         this.type = type;
@@ -22,6 +27,8 @@ public class RAM {
         }
         if (usageGB + allocateGB > totalGB) {
             this.usageGB = totalGB;
+        } else {
+            this.usageGB += allocateGB;
         }
         return "Память успешно зарезервирована! Текущая занятая память составляет : " + usageGB + "Gb";
     }
@@ -32,6 +39,8 @@ public class RAM {
         }
         if (usageGB - freeGB < 0) {
             this.usageGB = 0;
+        } else {
+            this.usageGB -= freeGB;
         }
         return "Память успешно освобождена! Текущая занятая память составляет : " + usageGB + "Gb";
     }
