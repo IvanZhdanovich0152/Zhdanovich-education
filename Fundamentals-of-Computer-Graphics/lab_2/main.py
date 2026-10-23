@@ -1,6 +1,5 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 
 P = np.array([
     [2, 2, 5],
@@ -14,14 +13,14 @@ def natural_cubic_spline(y):
     h = 1.0
 
     A = np.zeros((n-1, n-1))
-    rightSide = np.zeros(n-1)
+    right_side = np.zeros(n-1)
     for i in range(1, n):
         if i-1 > 0: A[i-1, i-2] = h/6
         A[i-1, i-1] = 2*h/3
         if i < n-1: A[i-1, i] = h/6
-        rightSide[i-1] = (y[i+1] - 2*y[i] + y[i-1]) / h
+        right_side[i-1] = (y[i+1] - 2*y[i] + y[i-1]) / h
 
-    M_inner = np.linalg.solve(A, rightSide)
+    M_inner = np.linalg.solve(A, right_side)
     M = np.concatenate(([0.0], M_inner, [0.0]))
 
     coeffs = []

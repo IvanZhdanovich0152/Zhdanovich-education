@@ -8,7 +8,7 @@ namespace Lab2.Models;
 public abstract class Token
 {
     [XmlText]
-    public string Value { get; set; } = string.Empty;
+    public virtual string Value { get; set; } = string.Empty;
 
     public override string ToString() => Value;
 }

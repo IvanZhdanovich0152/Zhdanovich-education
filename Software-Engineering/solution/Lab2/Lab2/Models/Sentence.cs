@@ -18,7 +18,7 @@ public class Sentence
     
     [XmlIgnore] public IEnumerable<Word> Words => Tokens.OfType<Word>();
     [XmlIgnore] public IEnumerable<Punctuation> Punctuations => Tokens.OfType<Punctuation>();
-
+    
     [XmlIgnore]
     public char Terminator
     {

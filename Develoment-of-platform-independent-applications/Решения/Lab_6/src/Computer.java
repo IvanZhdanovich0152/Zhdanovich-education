@@ -35,17 +35,58 @@ public class Computer {
         return powerOn;
     }
 
-    // Методы работы с памятью ram.allocate()/.free()
-    // Методы работы с память disk.write()/.delete()
-    // Метод для работы с нагрузкой ЦП processor.setUsage()
+    public String allocateRAM(double amount) {
+        if (powerOn) {
+            ram.allocate(amount);
+            return "В ОП зарезервированно " + amount + "Гб";
+        }
+        return "Для начала надо включить компьютер";
+    }
 
-    // Добавить сеттеры для цп оп и вп
+    public String freeRAM(double amount) {
+        if (powerOn) {
+            ram.free(amount);
+            return "В ОП освобождено" + amount + "Гб";
+        }
+        return "Для начала надо включить компьютер";
+    }
+
+    public String writeDisk(double amount) {
+        if (powerOn) {
+            disk.write(amount);
+            return "На диск записано " + amount + "Гб";
+        }
+        return "Для начала надо включить компьютер";
+    }
+
+    public String deleteDisk(double amount) {
+        if (powerOn) {
+            disk.delete(amount);
+            return "С диска удалено" + amount + "Гб";
+        }
+        return "Для начала надо включить компьютер";
+    }
+
+    public String setProcessorUsage(int usage) {
+        if (powerOn) {
+            processor.setUsage(usage);
+            return "Нагрузка установлена на " + usage;
+        }
+        return "Для начала надо включить компьютер";
+    }
 
 
+    public void setProcessor(Processor processor) {
+        this.processor = processor;
+    }
 
+    public void setRam(RAM ram) {
+        this.ram = ram;
+    }
 
-
-
+    public void setDisk(HardDisk disk) {
+        this.disk = disk;
+    }
 
 
     public String checkSystemStatus(){

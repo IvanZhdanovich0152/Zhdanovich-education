@@ -74,8 +74,8 @@ internal class Program
                     break;
 
                 case "7":
-                    XmlExporter.Export(text, "output.xml");
-                    Console.WriteLine("Сохранено в output.xml");
+                    XmlExporter.Export(text, "Data/output.xml");
+                    Console.WriteLine("Сохранено в Data/output.xml");
                     break;
 
                 case "8":

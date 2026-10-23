@@ -7,8 +7,7 @@ def solution1():
     y = np.abs(x + 4.0 / (x + 2.0))
 
     plt.figure(figsize=(9, 5))
-    plt.plot(x, y, 'b-', linewidth=1.8,
-             label=r'y = abs(x + 4 \ (x + 2))')
+    plt.plot(x, y, 'b-', linewidth=1.8, label=r'y = abs(x + 4 \ (x + 2))')
     plt.xlabel('x')
     plt.ylabel('y')
     plt.ylim(0, 15)
@@ -86,8 +85,8 @@ def solution5():
     plt.axis('equal')
     plt.show()
 
-# solution1()
-# solution2()
-# solution3()
-# solution4()
+solution1()
+solution2()
+solution3()
+solution4()
 solution5()
