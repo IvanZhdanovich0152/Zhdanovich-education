@@ -5,108 +5,119 @@ public class Computer {
     private HardDisk disk;
     private boolean powerOn = false;
 
-    public Computer(Processor processor, RAM ram, HardDisk disk) {
-        if (processor == null) {
-            throw new IllegalArgumentException("Процессор не может быть null.");
-        }
-        if (ram == null) {
-            throw new IllegalArgumentException("ОП не может быть null.");
-        }
-        if (disk == null) {
-            throw new IllegalArgumentException("Диск не может быть null.");
-        }
+    private Computer(Processor processor, RAM ram, HardDisk disk) {
         this.processor = processor;
         this.ram = ram;
         this.disk = disk;
     }
 
-    public String turnOn() {
+    public static OperationResult<Computer> create(Processor processor, RAM ram, HardDisk disk) {
+        if (processor == null) {
+            return OperationResult.fail("Процессор не может быть null.");
+        }
+        if (ram == null) {
+            return OperationResult.fail("ОП не может быть null.");
+        }
+        if (disk == null) {
+            return OperationResult.fail("Диск не может быть null.");
+        }
+        Computer computer = new Computer(processor, ram, disk);
+        return OperationResult.ok(computer, "Компьютер успешно создан");
+    }
+
+    public OperationResult<Void> turnOn() {
         ram.allocate(2.3);
         processor.setUsage(13);
         powerOn = true;
-        return "Компьютер включен.";
+        return OperationResult.ok("Компьютер включен.");
     }
 
-    public String turnoff() {
+    public OperationResult<Void> turnoff() {
         ram.free(128.0);
         processor.setUsage(0);
         powerOn = false;
-        return "Компьютер выключен.";
+        return OperationResult.ok("Компьютер выключен.");
     }
 
-    public boolean isPowerOn() {
-        return powerOn;
-    }
-
-    public String allocateRAM(double amount) {
+    public OperationResult<Void> allocateRAM(double amount) {
         if (powerOn) {
             return ram.allocate(amount);
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
-    public String freeRAM(double amount) {
+    public OperationResult<Void> freeRAM(double amount) {
         if (powerOn) {
             return ram.free(amount);
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
-    public String writeDisk(double amount) {
+    public OperationResult<Void> writeDisk(double amount) {
         if (powerOn) {
             return disk.write(amount);
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
-    public String deleteDisk(double amount) {
+    public OperationResult<Void> deleteDisk(double amount) {
         if (powerOn) {
             return disk.delete(amount);
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
-    public String setProcessorUsage(int usage) {
+    public OperationResult<Void> setProcessorUsage(int usage) {
         if (powerOn) {
             return processor.setUsage(usage);
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
 
-    public void setProcessor(Processor processor) {
+    public OperationResult<Void> setProcessor(Processor processor) {
         if (processor == null) {
-            throw new IllegalArgumentException("Процессор не может быть null.");
+            return OperationResult.fail("Процессор не может быть null.");
         }
         this.processor = processor;
+        return OperationResult.ok("Процессор успешно заменён.");
     }
 
-    public void setRam(RAM ram) {
+    public OperationResult<Void> setRam(RAM ram) {
         if (ram == null) {
-            throw new IllegalArgumentException("ОП не может быть null.");
+            return OperationResult.fail("ОП не может быть null.");
         }
         this.ram = ram;
+        return OperationResult.ok("ОП успешно заменено.");
     }
 
-    public void setDisk(HardDisk disk) {
+    public OperationResult<Void> setDisk(HardDisk disk) {
         if (disk == null) {
-            throw new IllegalArgumentException("Диск не может быть null.");
+            return OperationResult.fail("Диск не может быть null.");
         }
         this.disk = disk;
+        return OperationResult.ok("Диск успешно заменён.");
     }
 
 
-    public String checkSystemStatus(){
+    public OperationResult<Void> checkSystemStatus(){
         if (powerOn) {
-            return processor.checkStatus() + ram.checkStatus() + disk.checkStatus();
+            return OperationResult.ok(
+                            processor.checkStatus().message() +
+                            ram.checkStatus().message() +
+                            disk.checkStatus().message());
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 
-    public String showSystemInfo() {
+    public OperationResult<Void> showSystemInfo() {
         if (powerOn) {
-            return processor + "\n" + ram + "\n" + disk;
+            return OperationResult.ok(
+                            processor.printInfo().message() + "\n" +
+                            ram.printInfo().message() + "\n" +
+                            disk.printInfo().message()
+            );
         }
-        return "Для начала надо включить компьютер";
+        return OperationResult.fail("Для начала надо включить компьютер");
     }
 }

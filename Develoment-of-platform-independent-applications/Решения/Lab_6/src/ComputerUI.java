@@ -24,14 +24,14 @@ public class ComputerUI {
                 printMenu();
                 int choice = readInt("Выберите пункт: ", 0, 8);
                 switch (choice) {
-                    case 1 -> System.out.println(computer.turnOn());
-                    case 2 -> System.out.println(computer.turnoff());
+                    case 1 -> printResponse(computer.turnOn());
+                    case 2 -> printResponse(computer.turnoff());
                     case 3 -> handleRamMenu();
                     case 4 -> handleDiskMenu();
                     case 5 -> handleProcessorMenu();
                     case 6 -> handleReplaceMenu();
-                    case 7 -> System.out.println(computer.showSystemInfo());
-                    case 8 -> System.out.println(computer.checkSystemStatus());
+                    case 7 -> printResponse(computer.showSystemInfo());
+                    case 8 -> printResponse(computer.checkSystemStatus());
                     case 0 -> running = false;
                 }
             }
@@ -68,8 +68,8 @@ public class ComputerUI {
             int choice = readInt("Выберите пункт: ", 0, 2);
 
             switch (choice) {
-                case 1 -> System.out.println(computer.allocateRAM(readDouble("Введите объем памяти в ГБ: ")));
-                case 2 -> System.out.println(computer.freeRAM(readDouble("Введите объем памяти в ГБ: ")));
+                case 1 -> printResponse(computer.allocateRAM(readDouble("Введите объем памяти в ГБ: ")));
+                case 2 -> printResponse(computer.freeRAM(readDouble("Введите объем памяти в ГБ: ")));
                 case 0 -> running = false;
             }
         }
@@ -85,8 +85,8 @@ public class ComputerUI {
             int choice = readInt("Выберите пункт: ", 0, 2);
 
             switch (choice) {
-                case 1 -> System.out.println(computer.writeDisk(readDouble("Введите объем данных в ГБ: ")));
-                case 2 -> System.out.println(computer.deleteDisk(readDouble("Введите объем данных в ГБ: ")));
+                case 1 -> printResponse(computer.writeDisk(readDouble("Введите объем данных в ГБ: ")));
+                case 2 -> printResponse(computer.deleteDisk(readDouble("Введите объем данных в ГБ: ")));
                 case 0 -> running = false;
             }
         }
@@ -102,7 +102,7 @@ public class ComputerUI {
 
             switch (choice) {
                 case 1 ->
-                        System.out.println(computer.setProcessorUsage(
+                        printResponse(computer.setProcessorUsage(
                                 readInt("Введите нагрузку процессора в процентах: ", 0, 100)));
 
                 case 0 -> running = false;
@@ -135,70 +135,88 @@ public class ComputerUI {
         Processor processor = buildProcessor();
         RAM ram = buildRam();
         HardDisk disk = buildDisk();
-        return new Computer(processor, ram, disk);
+
+        OperationResult<Computer> result = Computer.create(processor, ram, disk);
+        if (result.isSuccess()) {
+            printResponse(result);
+            return result.value();
+        } else {
+            printResponse(result);
+            return null;
+        }
+
     }
 
     private Processor buildProcessor() {
         while (true) {
-            try {
-                System.out.println("\n--- ПРОЦЕССОР ---");
-                String model = readString("Введите модель процессора: ");
-                double speed = readDouble("Введите частоту процессора в ГГц: ");
-                int cores = readInt("Введите количество ядер: ", 1, Integer.MAX_VALUE);
-                int temperature = readInt("Введите температуру процессора: ", 0, Integer.MAX_VALUE);
-                return new Processor(model, speed, cores, temperature);
-            } catch (IllegalArgumentException exception) {
-                System.out.println("[ОШИБКА] -> " + exception.getMessage());
-                System.out.println("Повторите ввод параметров процессора.");
+            System.out.println("\n--- ПРОЦЕССОР ---");
+            String model = readString("Введите модель процессора: ");
+            double speed = readDouble("Введите частоту процессора в ГГц: ");
+            int cores = readInt("Введите количество ядер: ", 1, Integer.MAX_VALUE);
+            int temperature = readInt("Введите температуру процессора: ", 0, Integer.MAX_VALUE);
+
+            OperationResult<Processor> result = Processor.create(model, speed, cores, temperature);
+            if (result.isSuccess()) {
+                printResponse(result);
+                return result.value();
             }
+            printResponse(result);
+            System.out.println("Повторите ввод параметров процессора.");
+
         }
     }
 
     private RAM buildRam() {
         while (true) {
-            try {
-                System.out.println("\n--- ОП ---");
-                int speed = readInt("Введите частоту ОП в МГц: ", 1, Integer.MAX_VALUE);
-                double totalGB = readDouble("Введите общий объем ОП в ГБ: ");
-                RAM.TypeRAM type = readRamType();
-                return new RAM(speed, totalGB, type);
-            } catch (IllegalArgumentException exception) {
-                System.out.println("[ОШИБКА] -> " + exception.getMessage());
-                System.out.println("Повторите ввод параметров ОП.");
+            System.out.println("\n--- ОП ---");
+            int speed = readInt("Введите частоту ОП в МГц: ", 1, Integer.MAX_VALUE);
+            double totalGB = readDouble("Введите общий объем ОП в ГБ: ");
+            RAM.TypeRAM type = readRamType();
+
+            OperationResult<RAM> result = RAM.create(speed, totalGB, type);
+            if (result.isSuccess()) {
+                printResponse(result);
+                return result.value();
             }
+            printResponse(result);
+            System.out.println("Повторите ввод параметров ОП.");
         }
     }
 
     private HardDisk buildDisk() {
         while (true) {
-            try {
-                System.out.println("\n--- ДИСК ---");
-                double totalGB = readDouble("Введите общий объем диска в ГБ: ");
-                double usageGB = readDouble("Введите занятый объем диска в ГБ: ");
-                HardDisk.TypeHardDisk type = readDiskType();
-                return new HardDisk(totalGB, usageGB, type);
-            } catch (IllegalArgumentException exception) {
-                System.out.println("[ОШИБКА] -> " + exception.getMessage());
-                System.out.println("Повторите ввод параметров диска.");
+            System.out.println("\n--- ДИСК ---");
+            double totalGB = readDouble("Введите общий объем диска в ГБ: ");
+            double usageGB = readDouble("Введите занятый объем диска в ГБ: ");
+            HardDisk.TypeHardDisk type = readDiskType();
+
+            OperationResult<HardDisk> result = HardDisk.create(totalGB, usageGB, type);
+            if (result.isSuccess()) {
+                printResponse(result);
+                return result.value();
             }
+            printResponse(result);
+            System.out.println("Повторите ввод параметров диска.");
         }
     }
 
     private void replaceProcessor() {
-        computer.setProcessor(buildProcessor());
-        System.out.println("[УСПЕХ] -> Процессор заменен.");
+        printResponse(computer.setProcessor(buildProcessor()));
     }
 
     private void replaceRam() {
-        computer.setRam(buildRam());
-        System.out.println("[УСПЕХ] -> ОП заменена.");
+        printResponse(computer.setRam(buildRam()));
     }
 
     private void replaceDisk() {
-        computer.setDisk(buildDisk());
-        System.out.println("[УСПЕХ] -> Диск заменен.");
+        printResponse(computer.setDisk(buildDisk()));
     }
 
+    //
+
+    private void printResponse(OperationResult<?> result) {
+        System.out.println(result.isSuccess() ? "[УСПЕХ] -> " + result.message() : "[ОШИБКА] -> " + result.message());
+    }
 
     //
 
